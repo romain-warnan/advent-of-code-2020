@@ -143,4 +143,12 @@ public class Days {
 	public static int charToInt(int c) {
 		return c - 48;
 	}
+	
+	public static int height(char[][] table) {
+		return table.length;
+	}
+	
+	public static int width(char[][] table) {
+		return table[0].length;
+	}
 }
