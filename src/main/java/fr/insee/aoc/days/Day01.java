@@ -1,9 +1,8 @@
 package fr.insee.aoc.days;
 
-import fr.insee.aoc.utils.DayException;
+import static fr.insee.aoc.utils.Days.arrayOfInt;
 
-import static fr.insee.aoc.utils.Days.*;
-import static java.lang.Math.*;
+import fr.insee.aoc.utils.DayException;
 
 public class Day01 implements Day {
 
