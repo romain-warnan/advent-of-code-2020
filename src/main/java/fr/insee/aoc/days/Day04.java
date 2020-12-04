@@ -1,19 +1,12 @@
 package fr.insee.aoc.days;
 
-import static fr.insee.aoc.utils.Days.*;
+import static fr.insee.aoc.utils.Days.readInt;
+import static fr.insee.aoc.utils.Days.readString;
+import static fr.insee.aoc.utils.Days.streamOfLines;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.EnumSet;
-import java.util.List;
-import java.util.Set;
-import java.util.function.BiConsumer;
-import java.util.function.BinaryOperator;
-import java.util.function.Function;
-import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collector;
 
+import fr.insee.aoc.utils.BlocCollector;
 import fr.insee.aoc.utils.DayException;
 
 public class Day04 implements Day {
@@ -42,7 +35,7 @@ public class Day04 implements Day {
 	}
 
 	private static class Passport {
-		private String byr, iyr, eyr, hgt, hcl, ecl, pid, cid;
+		private String byr, iyr, eyr, hgt, hcl, ecl, pid;
 		private Pattern
 			byrPattern = Pattern.compile("\\d{4}"),
 			iyrPattern = Pattern.compile("\\d{4}"),
@@ -149,7 +142,6 @@ public class Day04 implements Day {
 				passport.pid = value;
 				break;
 			case "cid":
-				passport.cid = value;
 				break;
 			default:
 				throw new DayException("Code inconnu : " + key);
@@ -164,45 +156,5 @@ public class Day04 implements Day {
 		boolean hasValidFiels() {
 			return byrCheck() && iyrCheck() && eyrCheck() && hgtCheck() && hclCheck() && eclCheck() && pidCheck();
 		}
-	}
-	
-	private static class BlocCollector implements Collector<String, List<String>, List<String>> {
-		
-		@Override
-		public Supplier<List<String>> supplier() {
-			return ArrayList::new;
-		}
-
-		@Override
-		public BiConsumer<List<String>, String> accumulator() {
-			return (lines, line) -> {
-				if(lines.isEmpty()) {
-					lines.add("");
-				}
-				if(line.isBlank()) {
-					lines.add("");
-				}
-				else {
-					int lastIndex = lines.size() - 1;
-					lines.set(lastIndex, lines.get(lastIndex) + " " + line);
-				}
-			};
-		}
-
-		@Override
-		public BinaryOperator<List<String>> combiner() {
-			return null;
-		}
-
-		@Override
-		public Function<List<String>, List<String>> finisher() {
-			return Collections::unmodifiableList;
-		}
-
-		@Override
-		public Set<Characteristics> characteristics() {
-			return EnumSet.of(Characteristics.IDENTITY_FINISH);
-		}
-		
 	}
 }
