@@ -11,6 +11,7 @@ import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Supplier;
+import java.util.regex.Pattern;
 import java.util.stream.Collector;
 
 import fr.insee.aoc.utils.DayException;
@@ -23,13 +24,33 @@ public class Day04 implements Day {
 				.collect(new BlocCollector())
 				.stream()
 				.map(Passport::from)
-				.filter(Passport::isValid)
+				.filter(Passport::hasAllFiels)
+				.count();
+		return String.valueOf(numberOfValidPassport);
+	}
+	
+	@Override
+	public String part2(String input, Object... params) {
+		var numberOfValidPassport = streamOfLines(input)
+				.collect(new BlocCollector())
+				.stream()
+				.map(Passport::from)
+				.filter(Passport::hasAllFiels)
+				.filter(Passport::hasValidFiels)
 				.count();
 		return String.valueOf(numberOfValidPassport);
 	}
 
 	private static class Passport {
 		private String byr, iyr, eyr, hgt, hcl, ecl, pid, cid;
+		private Pattern
+			byrPattern = Pattern.compile("\\d{4}"),
+			iyrPattern = Pattern.compile("\\d{4}"),
+			eyrPattern = Pattern.compile("\\d{4}"),
+			hgtPattern = Pattern.compile("(\\d+)(cm|in)"),
+			hclPattern = Pattern.compile("#[0-9a-f]{6}"),
+			eclPattern = Pattern.compile("(amb|blu|brn|gry|grn|hzl|oth)"),
+			pidPattern = Pattern.compile("\\d{9}");
 		
 		static Passport from(String line) {
 			var passport = new Passport();
@@ -43,6 +64,64 @@ public class Day04 implements Day {
 			return passport;
 		}
 
+		private boolean byrCheck() {
+			var matcher = byrPattern.matcher(byr);
+			if(matcher.matches()) {
+				int n = readInt(0, matcher);
+				return 1920 <= n && n <= 2002;
+			}
+			return false;
+		}
+		
+		private boolean iyrCheck() {
+			var matcher = iyrPattern.matcher(iyr);
+			if(matcher.matches()) {
+				int n = readInt(0, matcher);
+				return 2010 <= n && n <= 2020;
+			}
+			return false;
+		}
+		
+		private boolean eyrCheck() {
+			var matcher = eyrPattern.matcher(eyr);
+			if(matcher.matches()) {
+				int n = readInt(0, matcher);
+				return 2020 <= n && n <= 2030;
+			}
+			return false;
+		}
+		
+		private boolean hgtCheck() {
+			var matcher = hgtPattern.matcher(hgt);
+			if(matcher.matches()) {
+				int n = readInt(1, matcher);
+				var unit = readString(2, matcher);
+				if(unit.equals("cm")) {
+					return 150 <= n && n <= 193;
+				}
+				else {
+					return 59 <= n && n <= 76;
+				}
+			}
+			return false;
+		
+		}
+		
+		private boolean hclCheck() {
+			var matcher = hclPattern.matcher(hcl);
+			return matcher.matches();
+		}
+		
+		private boolean eclCheck() {
+			var matcher = eclPattern.matcher(ecl);
+			return matcher.matches();
+		}
+		
+		private boolean pidCheck() {
+			var matcher = pidPattern.matcher(pid);
+			return matcher.matches();
+		}
+		
 		private static void readToken(Passport passport, String token) {
 			var item = token.split(":");
 			var key = item[0];
@@ -77,8 +156,13 @@ public class Day04 implements Day {
 			}
 		}
 	
-		boolean isValid() {
+		boolean hasAllFiels() {
 			return byr != null && iyr != null && eyr != null && hgt != null && hcl != null && ecl != null && pid != null;
+		}
+		
+		
+		boolean hasValidFiels() {
+			return byrCheck() && iyrCheck() && eyrCheck() && hgtCheck() && hclCheck() && eclCheck() && pidCheck();
 		}
 	}
 	
