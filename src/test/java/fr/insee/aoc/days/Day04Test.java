@@ -8,7 +8,7 @@ import org.junit.jupiter.api.Test;
 
 public class Day04Test  {
     
-	private Day day = new Day03();
+	private Day day = new Day04();
 	
 	@Test
 	public void case1_0() {
