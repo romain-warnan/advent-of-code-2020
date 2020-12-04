@@ -11,7 +11,19 @@ public class Day02 implements Day {
 
 	@Override
 	public String part1(String input, Object... params) {
-		var numberOfValidPasswords = streamOfLines(input).map(CorporatePolicy::from).filter(CorporatePolicy::isValid).count();;
+		var numberOfValidPasswords = streamOfLines(input)
+				.map(CorporatePolicy::from)
+				.filter(CorporatePolicy::isValidOld)
+				.count();
+		return String.valueOf(numberOfValidPasswords);
+	}
+	
+	@Override
+	public String part2(String input, Object... params) {
+		var numberOfValidPasswords = streamOfLines(input)
+				.map(CorporatePolicy::from)
+				.filter(CorporatePolicy::isValidNew)
+				.count();
 		return String.valueOf(numberOfValidPasswords);
 	}
 	
@@ -34,9 +46,13 @@ public class Day02 implements Day {
 			return policy;
 		}
 		
-		public boolean isValid() {
+		public boolean isValidOld() {
 			var n = password.chars().filter(c -> c == letter).count();
 			return min <= n && n <= max;
+		}
+		
+		public boolean isValidNew() {
+			return password.charAt(min - 1) == letter ^ password.charAt(max - 1) == letter;
 		}
 	}
 }
