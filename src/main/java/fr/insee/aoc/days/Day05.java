@@ -17,6 +17,21 @@ public class Day05 implements Day {
 		return String.valueOf(highestSeatID);
 	}
 	
+	@Override
+	public String part2(String input, Object... params) {
+		var seats = streamOfLines(input)
+				.map(BoardingPass::from)
+				.mapToInt(BoardingPass::seatID)
+				.sorted()
+				.toArray();
+		for (int i = 1; i < seats.length; i ++) {
+			if(seats[i] - seats[i - 1] > 1) {
+				return String.valueOf(seats[i] - 1);
+			}
+		}
+		throw new DayException();
+	}
+	
 	private static class BoardingPass {
 		
 		int row, column;

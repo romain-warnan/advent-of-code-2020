@@ -2,7 +2,6 @@ package fr.insee.aoc.days;
 
 import static org.junit.Assert.assertEquals;
 
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 
 
@@ -23,10 +22,9 @@ public class Day05Test  {
 	}
 
 	@Test
-	@Disabled
 	public void part2() {
-		String answer = day.part2("src/main/resources/04.txt");
+		String answer = day.part2("src/main/resources/05.txt");
 		System.out.printf("%s.2: %s%n", day.getClass().getSimpleName(), answer);
-		assertEquals("1355323200", answer);
+		assertEquals("527", answer);
 	}
 }
