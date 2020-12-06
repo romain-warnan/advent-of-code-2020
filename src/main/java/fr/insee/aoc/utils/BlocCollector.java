@@ -39,7 +39,8 @@ public class BlocCollector implements Collector<String, List<String>, List<Strin
 			}
 			else {
 				int lastIndex = lines.size() - 1;
-				lines.set(lastIndex, lines.get(lastIndex) + separator + line);
+				var current = lines.get(lastIndex);
+				lines.set(lastIndex, current + (current.isEmpty() ? "" : separator) + line);
 			}
 		};
 	}
