@@ -14,7 +14,7 @@ public class Day04 implements Day {
 	@Override
 	public String part1(String input, Object... params) {
 		var numberOfValidPassport = streamOfLines(input)
-				.collect(new BlocCollector())
+				.collect(new BlocCollector(" "))
 				.stream()
 				.map(Passport::from)
 				.filter(Passport::hasAllFiels)
@@ -25,7 +25,7 @@ public class Day04 implements Day {
 	@Override
 	public String part2(String input, Object... params) {
 		var numberOfValidPassport = streamOfLines(input)
-				.collect(new BlocCollector())
+				.collect(new BlocCollector(" "))
 				.stream()
 				.map(Passport::from)
 				.filter(Passport::hasAllFiels)

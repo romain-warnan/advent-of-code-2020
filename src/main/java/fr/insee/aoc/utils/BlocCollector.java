@@ -13,6 +13,16 @@ import java.util.stream.Collector;
 
 public class BlocCollector implements Collector<String, List<String>, List<String>> {
 	
+	private String separator;
+	
+	public BlocCollector() {
+		this.separator = "";
+	}
+	
+	public BlocCollector(String separator) {
+		this.separator = separator;
+	}
+
 	@Override
 	public Supplier<List<String>> supplier() {
 		return ArrayList::new;
@@ -29,7 +39,7 @@ public class BlocCollector implements Collector<String, List<String>, List<Strin
 			}
 			else {
 				int lastIndex = lines.size() - 1;
-				lines.set(lastIndex, lines.get(lastIndex) + " " + line);
+				lines.set(lastIndex, lines.get(lastIndex) + separator + line);
 			}
 		};
 	}
