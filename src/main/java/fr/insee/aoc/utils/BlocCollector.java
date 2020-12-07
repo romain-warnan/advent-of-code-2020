@@ -1,9 +1,10 @@
 package fr.insee.aoc.utils;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.EnumSet;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Deque;
 import java.util.Set;
 import java.util.function.BiConsumer;
 import java.util.function.BinaryOperator;
@@ -11,7 +12,7 @@ import java.util.function.Function;
 import java.util.function.Supplier;
 import java.util.stream.Collector;
 
-public class BlocCollector implements Collector<String, List<String>, List<String>> {
+public class BlocCollector implements Collector<String, Deque<String>, List<String>> {
 	
 	private String separator;
 	
@@ -24,12 +25,12 @@ public class BlocCollector implements Collector<String, List<String>, List<Strin
 	}
 
 	@Override
-	public Supplier<List<String>> supplier() {
-		return ArrayList::new;
+	public Supplier<Deque<String>> supplier() {
+		return LinkedList::new;
 	}
 
 	@Override
-	public BiConsumer<List<String>, String> accumulator() {
+	public BiConsumer<Deque<String>, String> accumulator() {
 		return (lines, line) -> {
 			if(lines.isEmpty()) {
 				lines.add("");
@@ -38,25 +39,24 @@ public class BlocCollector implements Collector<String, List<String>, List<Strin
 				lines.add("");
 			}
 			else {
-				int lastIndex = lines.size() - 1;
-				var current = lines.get(lastIndex);
-				lines.set(lastIndex, current + (current.isEmpty() ? "" : separator) + line);
+				var current = lines.pollLast();
+				lines.offerLast(current + (current.isEmpty() ? "" : separator) + line);
 			}
 		};
 	}
 
 	@Override
-	public BinaryOperator<List<String>> combiner() {
+	public BinaryOperator<Deque<String>> combiner() {
 		return null;
 	}
 
 	@Override
-	public Function<List<String>, List<String>> finisher() {
-		return Collections::unmodifiableList;
+	public Function<Deque<String>, List<String>> finisher() {
+		return ArrayList::new;
 	}
 
 	@Override
 	public Set<Characteristics> characteristics() {
-		return EnumSet.of(Characteristics.IDENTITY_FINISH);
+		return EnumSet.noneOf(Characteristics.class);
 	}
 }
