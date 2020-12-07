@@ -14,11 +14,23 @@ public class Day07 implements Day {
 
 	@Override
 	public String part1(String input, Object... params) {
-		var bags = new HashSet<Bag>();
-		streamOfLines(input).forEach(line -> Bag.from(line, bags));
+		var bags = bags(input);
 		var shinyGold = Bag.find("shiny gold", bags);
 		var count = bags.stream().filter(b -> b.contains(shinyGold)).count();
 		return String.valueOf(count);
+	}
+	
+	@Override
+	public String part2(String input, Object... params) {
+		var bags = bags(input);
+		var shinyGold = Bag.find("shiny gold", bags);
+		return String.valueOf(shinyGold.countBags());
+	}
+	
+	static Set<Bag> bags(String input) {
+		var bags = new HashSet<Bag>();
+		streamOfLines(input).forEach(line -> Bag.from(line, bags));
+		return bags;
 	}
 	
 	static class Bag {
@@ -63,6 +75,17 @@ public class Day07 implements Day {
 		
 		boolean contains(Bag bag) {
 			return content.containsKey(bag) || content.keySet().stream().anyMatch(b -> b.contains(bag));
+		}
+		
+		int countBags() {
+			if(content.isEmpty()) {
+				return 0;
+			}
+			int n = 0;
+			for(var entry : content.entrySet()) {
+				n += entry.getValue() * (1 + entry.getKey().countBags());
+			}
+			return n;
 		}
 	}
 }
