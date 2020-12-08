@@ -16,7 +16,7 @@ public class Day08 implements Day {
 		var position = 0;
 		var accumulator = new AtomicInteger();
 		var executed = new HashSet<Integer>();
-		while(true) {
+		while(position < operations.length) {
 			try {
 				var nextPosition = operations[position].execute(executed, accumulator);
 				executed.add(position);
@@ -26,8 +26,41 @@ public class Day08 implements Day {
 				return String.valueOf(accumulator);
 			}
 		}
+		throw new DayException();
 	}
-
+	
+	@Override
+	public String part2(String input, Object... params) {
+		var operations = operations(input);
+		for(int i = 0; i < operations.length; i ++) {
+			var operation = operations[i];
+			if(operation instanceof Nop || operation instanceof Jmp) {
+				operations[i] = operation.change();
+				var position = 0;
+				var accumulator = new AtomicInteger();
+				var executed = new HashSet<Integer>();
+				var fail = false;
+				while(position < operations.length) {
+					try {
+						var nextPosition = operations[position].execute(executed, accumulator);
+						executed.add(position);
+						position = nextPosition;
+					}
+					catch(DayException e) {
+						operations[i] = operation;
+						fail = true;
+						break;
+					}
+				}
+				if(!fail) {
+					return String.valueOf(accumulator);
+				}
+			}
+			
+		}
+		throw new DayException();
+	}
+	
 	static Operation[] operations(String input) {
 		var lines = arrayOfLines(input);
 		var operations = new Operation[lines.length];
@@ -37,11 +70,6 @@ public class Day08 implements Day {
 			operations[i] = operation;
 		}
 		return operations;
-	}
-	
-	@Override
-	public String part2(String input, Object... params) {
-		return String.valueOf(0);
 	}
 	
 	static abstract class Operation {
@@ -65,11 +93,15 @@ public class Day08 implements Day {
 			}
 		}
 
-		public int execute(Set<Integer> executed, AtomicInteger accumulator) {
+		int execute(Set<Integer> executed, AtomicInteger accumulator) {
 			if(executed.contains(index)) {
-				throw new DayException();
+				throw new DayException("infinite loop !");
 			}
 			return -1;
+		}
+		
+		Operation change() {
+			return this;
 		}
 	}
 	
@@ -98,6 +130,13 @@ public class Day08 implements Day {
 			super.execute(executed, accumulator);
 			return index + value;
 		}
+
+		@Override
+		Operation change() {
+			var operation = new Nop(value);
+			operation.index = this.index;
+			return operation;
+		}
 	}
 	
 	static class Nop extends Operation {
@@ -110,6 +149,13 @@ public class Day08 implements Day {
 		public int execute(Set<Integer> executed, AtomicInteger accumulator) {
 			super.execute(executed, accumulator);
 			return index + 1;
+		}
+		
+		@Override
+		Operation change() {
+			var operation = new Jmp(value);
+			operation.index = this.index;
+			return operation;
 		}
 	}
 }
