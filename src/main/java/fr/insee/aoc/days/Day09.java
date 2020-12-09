@@ -2,6 +2,8 @@ package fr.insee.aoc.days;
 
 import static fr.insee.aoc.utils.Days.*;
 
+import java.util.Arrays;
+
 import fr.insee.aoc.utils.DayException;
 
 public class Day09 implements Day {
@@ -31,6 +33,21 @@ public class Day09 implements Day {
 	
 	@Override
 	public String part2(String input, Object... params) {
+		var invalidNumber = (long) params[0];
+		var numbers = streamOfLines(input).mapToLong(Long::parseLong).toArray();
+		for(var n = 0; n < numbers.length; n ++) {
+			var i = n;
+			long sum = 0;
+			while (sum < invalidNumber) {
+				sum += numbers[i];
+				if(sum == invalidNumber) {
+					var range = Arrays.copyOfRange(numbers, n, i);
+					var summary = Arrays.stream(range).summaryStatistics();
+					return String.valueOf(summary.getMin() + summary.getMax());
+				}
+				i ++;
+			}
+		}
 		throw new DayException();
 	}
 }
