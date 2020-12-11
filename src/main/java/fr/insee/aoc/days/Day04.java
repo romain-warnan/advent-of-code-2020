@@ -17,7 +17,7 @@ public class Day04 implements Day {
 				.collect(new BlocCollector(" "))
 				.stream()
 				.map(Passport::from)
-				.filter(Passport::hasAllFiels)
+				.filter(Passport::hasAllFields)
 				.count();
 		return String.valueOf(numberOfValidPassport);
 	}
@@ -28,15 +28,15 @@ public class Day04 implements Day {
 				.collect(new BlocCollector(" "))
 				.stream()
 				.map(Passport::from)
-				.filter(Passport::hasAllFiels)
-				.filter(Passport::hasValidFiels)
+				.filter(Passport::hasAllFields)
+				.filter(Passport::hasValidFields)
 				.count();
 		return String.valueOf(numberOfValidPassport);
 	}
 
 	private static class Passport {
 		private String byr, iyr, eyr, hgt, hcl, ecl, pid;
-		private Pattern
+		private static final Pattern
 			byrPattern = Pattern.compile("\\d{4}"),
 			iyrPattern = Pattern.compile("\\d{4}"),
 			eyrPattern = Pattern.compile("\\d{4}"),
@@ -148,12 +148,12 @@ public class Day04 implements Day {
 			}
 		}
 	
-		boolean hasAllFiels() {
+		boolean hasAllFields() {
 			return byr != null && iyr != null && eyr != null && hgt != null && hcl != null && ecl != null && pid != null;
 		}
 		
 		
-		boolean hasValidFiels() {
+		boolean hasValidFields() {
 			return byrCheck() && iyrCheck() && eyrCheck() && hgtCheck() && hclCheck() && eclCheck() && pidCheck();
 		}
 	}
