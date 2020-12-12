@@ -7,9 +7,9 @@ import static fr.insee.aoc.utils.Days.width;
 public class Day11 implements Day {
 
 	private static final int 
-		EMPTY = (int) 'L',
-		OCCUPIED = (int) '#',
-		FLOOR = (int) '.';
+		EMPTY = 'L',
+		OCCUPIED = '#',
+		FLOOR = '.';
 	
 	@Override
 	public String part1(String input, Object... params) {

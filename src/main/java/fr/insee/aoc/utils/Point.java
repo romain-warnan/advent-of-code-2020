@@ -7,8 +7,7 @@ public class Point implements Comparable<Point> {
 
 	public static final Point ORIGIN = Point.of(0, 0);
 
-	protected int x;
-	protected int y;
+	public int x, y;
 
 	private static final Comparator<Point> comparator = Comparator.comparingInt(Point::getY).thenComparingInt(Point::getX);
 
