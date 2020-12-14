@@ -1,8 +1,12 @@
 package fr.insee.aoc.days;
 
 import static fr.insee.aoc.utils.Days.*;
+import static java.util.Comparator.comparingInt;
 
 import java.util.Arrays;
+import java.util.Comparator;
+
+import org.apache.commons.math3.util.Pair;
 
 import fr.insee.aoc.utils.DayException;
 
@@ -12,21 +16,13 @@ public class Day13 implements Day {
 	public String part1(String input, Object... params) {
 		var notes = arrayOfLines(input);
 		var timestamp = Integer.parseInt(notes[0]);
-		var minutes = Arrays.stream(notes[1].split(","))
+		var pair = Arrays.stream(notes[1].split(","))
 				.filter(s -> !s.equals("x"))
 				.mapToInt(Integer::parseInt)
-				.toArray();
-		var minId = 0;
-		var minDelta = Integer.MAX_VALUE;
-		for(int i = 0; i < minutes.length; i ++) {
-			var minute = minutes[i];
-			var delta = delta(minute, timestamp);
-			if(delta < minDelta) {
-				minDelta = delta;
-				minId = minute;
-			}
-		}
-		return String.valueOf(minId * minDelta);
+				.mapToObj(i -> new Pair<Integer, Integer>(i, delta(i, timestamp)))
+				.min(comparingInt(p -> p.getSecond()))
+				.orElseThrow();
+		return String.valueOf(pair.getFirst() * pair.getSecond());
 	}
 
 	int delta(int minute, int timestamp) {
