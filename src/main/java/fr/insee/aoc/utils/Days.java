@@ -104,6 +104,10 @@ public class Days {
 		return Integer.parseInt(matcher.group(group));
 	}
 	
+	public static long readLong(int group, Matcher matcher) {
+		return Long.parseLong(matcher.group(group));
+	}
+	
 	public static char readChar(int group, Matcher matcher) {
 		return readString(group, matcher).charAt(0);
 	}
