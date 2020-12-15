@@ -4,13 +4,11 @@ import static fr.insee.aoc.utils.Days.arrayOfLines;
 import static fr.insee.aoc.utils.Days.readLong;
 import static java.lang.Long.parseLong;
 import static java.lang.Long.toBinaryString;
+import static java.util.Collections.*;
 import static java.util.stream.Collectors.toList;
 import static org.apache.commons.lang3.StringUtils.leftPad;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 import java.util.regex.Pattern;
 
 public class Day14 implements Day {
@@ -83,7 +81,7 @@ public class Day14 implements Day {
 				binary[n] = '1';
 			}
 		}
-		return duplicate(Arrays.asList(new String(binary)))
+		return duplicate(singletonList(new String(binary)))
 			.stream()
 			.map(s -> parseLong(s, 2))
 			.collect(toList());
