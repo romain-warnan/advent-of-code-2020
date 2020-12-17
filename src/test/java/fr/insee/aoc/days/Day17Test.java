@@ -15,7 +15,7 @@ public class Day17Test  {
 
 	@Test
 	public void case2_0() {
-		assertEquals("-1", day.part2("src/test/resources/17-0.txt"));
+		assertEquals("848", day.part2("src/test/resources/17-0.txt"));
 	}
 
 	@Test
@@ -29,6 +29,6 @@ public class Day17Test  {
 	public void part2() {
 		String answer = day.part2("src/main/resources/17.txt");
 		System.out.printf("%s.2: %s%n", day.getClass().getSimpleName(), answer);
-		assertEquals("-1", answer);
+		assertEquals("1816", answer);
 	}
 }

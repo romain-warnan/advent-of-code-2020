@@ -14,6 +14,15 @@ public class Day17 implements Day {
 
 	@Override
 	public String part1(String input, Object... params) {
+		return cycle(input, false);
+	}
+
+	@Override
+	public String part2(String input, Object... params) {
+		return cycle(input, true);
+	}
+
+	public String cycle(String input, boolean d4) {
 		var slice = tableOfChars(input);
 		var height = height(slice);
 		var width = width(slice);
@@ -31,25 +40,29 @@ public class Day17 implements Day {
 			var statX = activeCubes.stream().mapToInt(cube -> cube.x).summaryStatistics();
 			var statY = activeCubes.stream().mapToInt(cube -> cube.y).summaryStatistics();
 			var statZ = activeCubes.stream().mapToInt(cube -> cube.z).summaryStatistics();
+			var statW = activeCubes.stream().mapToInt(cube -> cube.w).summaryStatistics();
 			var changes = new HashSet<Cube>();
 			for(int i = statX.getMin() - 1; i <= statX.getMax() + 1; i ++) {
 				for(int j = statY.getMin() - 1; j <= statY.getMax() + 1; j ++) {
 					for(int k = statZ.getMin() - 1; k <= statZ.getMax() + 1; k ++) {
-						var inactive = Cube.newInactive(i, j, k);
-						var cube = activeCubes.stream()
-								.filter(c -> c.equals(inactive))
-								.findFirst()
-								.orElse(inactive);
-						var neighbors = cube.neighbors();
-						var activeNeighbors = neighbors.stream().filter(activeCubes::contains).count();
-						if(cube.active) {
-							if(activeNeighbors != 2 && activeNeighbors != 3) {
-								changes.add(cube);
-							}
-						}
-						else {
-							if(activeNeighbors == 3) {
-								changes.add(cube);
+						var minW = d4 ? statW.getMin() - 1 : 0;
+						var maxW = d4 ? statW.getMax() + 1 : 0;
+						for (int l = minW; l <= maxW; l++) {
+							var inactive = Cube.newInactive(i, j, k, l);
+							var cube = activeCubes.stream()
+									.filter(c -> c.equals(inactive))
+									.findFirst()
+									.orElse(inactive);
+							var neighbors = cube.neighbors(d4);
+							var activeNeighbors = neighbors.stream().filter(activeCubes::contains).count();
+							if (cube.active) {
+								if (activeNeighbors != 2 && activeNeighbors != 3) {
+									changes.add(cube);
+								}
+							} else {
+								if (activeNeighbors == 3) {
+									changes.add(cube);
+								}
 							}
 						}
 					}
@@ -71,7 +84,7 @@ public class Day17 implements Day {
 	}
 
 	static class Cube {
-		int x, y, z;
+		int x, y, z, w;
 		boolean active;
 
 		static Cube newActive(int i, int j) {
@@ -80,25 +93,31 @@ public class Day17 implements Day {
 			cube.x = j;
 			cube.y = i;
 			cube.z = 0;
+			cube.w = 0;
 			return cube;
 		}
 
-		static Cube newInactive(int x, int y, int z) {
+		static Cube newInactive(int x, int y, int z, int w) {
 			var cube = new Cube();
 			cube.active = false;
 			cube.x = x;
 			cube.y = y;
 			cube.z = z;
+			cube.w = w;
 			return cube;
 		}
 
-		List<Cube> neighbors() {
+		List<Cube> neighbors(boolean d4) {
 			var neighbors = new ArrayList<Cube>(26);
 			for(var i = -1; i <= 1; i ++) {
 				for(var j = -1; j <= 1; j ++) {
 					for(var k = -1; k <= 1; k ++) {
-						if(i != 0 || j != 0 || k != 0) {
-							neighbors.add(Cube.newInactive(x + i, y + j, z + k));
+						var minL = d4 ? -1 : 0;
+						var maxL = d4 ? 1 : 0;
+						for(var l = minL; l <= maxL; l ++) {
+							if (i != 0 || j != 0 || k != 0 || l != 0) {
+								neighbors.add(Cube.newInactive(x + i, y + j, z + k, w + l));
+							}
 						}
 					}
 				}
@@ -111,17 +130,12 @@ public class Day17 implements Day {
 			if (this == o) return true;
 			if (o == null || getClass() != o.getClass()) return false;
 			Cube cube = (Cube) o;
-			return x == cube.x && y == cube.y && z == cube.z;
+			return x == cube.x && y == cube.y && z == cube.z && w == cube.w;
 		}
 
 		@Override
 		public int hashCode() {
-			return Objects.hash(x, y, z);
+			return Objects.hash(x, y, z, w);
 		}
-	}
-
-	@Override
-	public String part2(String input, Object... params) {
-		throw new DayException();
 	}
 }
